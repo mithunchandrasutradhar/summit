@@ -1,6 +1,7 @@
 @php
     $event = \App\Models\Event::current();
     $content = $section->content ?? [];
+    $settings = app(\App\Settings\GeneralSettings::class);
 @endphp
 
 <section class="relative overflow-hidden bg-ink-950">
@@ -28,7 +29,7 @@
         </h1>
 
         <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-ink-200">
-            {{ $content['subheading'] ?? __('The national platform for freelancers, aspiring freelancers, digital professionals and the AI-powered digital economy of Bangladesh.') }}
+            {{ $content['subheading'] ?? $settings->site_tagline ?? __('The national platform for freelancers, aspiring freelancers, digital professionals and the AI-powered digital economy of Bangladesh.') }}
         </p>
 
         @if ($event?->countdown_target_at && $event->countdown_target_at->isFuture())

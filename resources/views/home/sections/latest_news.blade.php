@@ -1,5 +1,6 @@
 @php
     $posts = \App\Models\NewsPost::published()->latest('published_at')->take(3)->get();
+    $content = $section->content ?? [];
 @endphp
 
 @if ($posts->isNotEmpty())
@@ -7,7 +8,7 @@
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink-600">{{ __('Stay Updated') }}</span>
-                <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ __('Latest News') }}</h2>
+                <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ $content['heading'] ?? __('Latest News') }}</h2>
             </div>
             <a href="{{ lroute('news.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700">
                 {{ __('View all') }}

@@ -1,5 +1,6 @@
 @php
     $sessions = \App\Models\Session::published()->forCurrentEvent()->orderBy('date')->orderBy('start_time')->take(4)->get();
+    $content = $section->content ?? [];
 
     $typeColors = [
         'keynote' => 'bg-brand-100 text-brand-700',
@@ -15,7 +16,7 @@
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>
                     <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink-600">{{ __('Grand Summit') }}</span>
-                    <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ __('Agenda Preview') }}</h2>
+                    <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ $content['heading'] ?? __('Agenda Preview') }}</h2>
                 </div>
                 <a href="{{ lroute('agenda.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700">
                     {{ __('Explore Agenda') }}

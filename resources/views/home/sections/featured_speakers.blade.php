@@ -1,5 +1,6 @@
 @php
     $speakers = \App\Models\Speaker::published()->where('is_featured', true)->orderBy('order')->take(8)->get();
+    $content = $section->content ?? [];
 @endphp
 
 @if ($speakers->isNotEmpty())
@@ -7,7 +8,7 @@
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-700">{{ __('Meet the Lineup') }}</span>
-                <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ __('Featured Speakers') }}</h2>
+                <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ $content['heading'] ?? __('Featured Speakers') }}</h2>
             </div>
             <a href="{{ lroute('speakers.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700">
                 {{ __('View all') }}

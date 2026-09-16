@@ -14,6 +14,9 @@
                 @foreach ($tiers as $tier)
                     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                         <h3 class="font-bold text-slate-900">{{ $tier->name }}</h3>
+                        <p class="mt-1 text-lg font-extrabold text-brand-600">
+                            {{ __('BDT :amount', ['amount' => number_format((float) $tier->price)]) }}
+                        </p>
                         @if ($tier->benefits)
                             <p class="mt-2 text-sm text-slate-600">{{ Str::limit($tier->benefits, 120) }}</p>
                         @endif

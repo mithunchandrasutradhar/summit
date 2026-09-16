@@ -7,8 +7,9 @@
 
     @php
         $generalSettings = app(\App\Settings\GeneralSettings::class);
-        $pageTitle = trim(($__env->yieldContent('title') ?: config('app.name')));
-        $pageDescription = trim(($__env->yieldContent('meta_description') ?: 'Freelancer Summit Bangladesh 2026 — the national platform for freelancers, digital professionals and the AI-powered digital economy of Bangladesh.'));
+        $siteName = $generalSettings->site_name ?: config('app.name');
+        $pageTitle = trim(($__env->yieldContent('title') ?: $siteName));
+        $pageDescription = trim(($__env->yieldContent('meta_description') ?: $generalSettings->site_tagline ?: 'Freelancer Summit Bangladesh 2026 — the national platform for freelancers, digital professionals and the AI-powered digital economy of Bangladesh.'));
         $ogImageUrl = $__env->yieldContent('og_image')
             ?: ($generalSettings->default_og_image ? \Illuminate\Support\Facades\Storage::disk('public')->url($generalSettings->default_og_image) : null);
     @endphp
@@ -29,7 +30,7 @@
     <link rel="alternate" hreflang="x-default" href="{{ url('/'.config('app.locale').'/'.$pathWithoutLocale) }}">
 
     {{-- Open Graph --}}
-    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:site_name" content="{{ $siteName }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="{{ app()->getLocale() }}">
     <meta property="og:url" content="{{ url()->current() }}">
@@ -234,8 +235,22 @@
                     <p class="mt-4 text-xs font-semibold uppercase tracking-wider text-ink-400">{{ __('Organized by') }}</p>
                     <p class="mt-1 text-sm text-ink-300">{{ __('Bangladesh Association of Contact Center & Outsourcing (BACCO) / DoICT') }}</p>
 
+                    @php $settings = app(\App\Settings\GeneralSettings::class); @endphp
+                    @if ($settings->contact_email || $settings->contact_phone || $settings->contact_address)
+                        <div class="mt-4 space-y-1 text-sm text-ink-300">
+                            @if ($settings->contact_email)
+                                <p><a href="mailto:{{ $settings->contact_email }}" class="transition hover:text-brand-400">{{ $settings->contact_email }}</a></p>
+                            @endif
+                            @if ($settings->contact_phone)
+                                <p><a href="tel:{{ $settings->contact_phone }}" class="transition hover:text-brand-400">{{ $settings->contact_phone }}</a></p>
+                            @endif
+                            @if ($settings->contact_address)
+                                <p>{{ $settings->contact_address }}</p>
+                            @endif
+                        </div>
+                    @endif
+
                     @php
-                        $settings = app(\App\Settings\GeneralSettings::class);
                         $socialIcons = [
                             'social_facebook' => ['label' => 'Facebook', 'path' => 'M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.87.24-1.46 1.5-1.46H16.5V4.36c-.26-.03-1.15-.11-2.19-.11-2.17 0-3.66 1.32-3.66 3.75V10.5h-2.5v3h2.5V21h2.85Z'],
                             'social_twitter' => ['label' => 'Twitter / X', 'path' => 'M4 4l16 16M20 4 4 20'],

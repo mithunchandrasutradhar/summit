@@ -1,12 +1,13 @@
 @php
     $partners = \App\Models\Partner::published()->orderBy('order')->get();
+    $content = $section->content ?? [];
 @endphp
 
 @if ($partners->isNotEmpty())
     <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div class="text-center">
             <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink-600">{{ __('Our Ecosystem') }}</span>
-            <h2 class="mt-4 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ __('Partners & Sponsors') }}</h2>
+            <h2 class="mt-4 text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl">{{ $content['heading'] ?? __('Partners & Sponsors') }}</h2>
         </div>
         <div class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
             @foreach ($partners as $partner)
