@@ -57,5 +57,9 @@ class DatabaseSeeder extends Seeder
         $this->call(SponsorshipExhibitionSeeder::class);
         $this->call(ForumSeeder::class);
         $this->call(FormBuilderSeeder::class);
+
+        if (app()->environment('local')) {
+            $this->call(DemoContentSeeder::class);
+        }
     }
 }

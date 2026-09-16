@@ -1,20 +1,18 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
+import preset from './vendor/filament/filament/tailwind.config.preset';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    presets: [preset],
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/**/*.blade.php',
-        './resources/**/*.js',
-        './resources/**/*.vue',
+        './app/Filament/**/*.php',
+        './resources/views/filament/**/*.blade.php',
+        './vendor/filament/**/*.blade.php',
     ],
     theme: {
         extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
             colors: {
+                // Same tokens as the public site (tailwind.config.js) so the
+                // admin panel and the public site read as one product.
                 brand: {
                     50: '#fff8eb',
                     100: '#ffecc6',
@@ -28,10 +26,6 @@ export default {
                     900: '#7a2c0d',
                     950: '#461404',
                 },
-                // Deep navy counterpart to `brand` — used for the hero,
-                // footer, and other high-contrast sections so the orange
-                // accent has something rich to sit on instead of flat
-                // white/slate everywhere.
                 ink: {
                     50: '#f5f6fa',
                     100: '#e9ebf3',
@@ -46,10 +40,6 @@ export default {
                     950: '#0c0e1c',
                 },
             },
-            boxShadow: {
-                glow: '0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px -15px rgba(221,97,3,0.35)',
-            },
         },
     },
-    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
 };

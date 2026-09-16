@@ -80,50 +80,101 @@
         {{ __('Skip to content') }}
     </a>
 
-    <header class="border-b border-slate-100 bg-white/95 backdrop-blur sticky top-0 z-40" x-data="{ mobileOpen: false }">
+    <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur-md" x-data="{ mobileOpen: false, openMenu: null }" @keydown.escape="openMenu = null">
         <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-            <a href="{{ lroute('home') }}" class="flex items-center gap-2 font-bold text-brand-700">
-                <span class="text-lg leading-tight">
-                    {{ __('Freelancer Summit') }}<br class="hidden sm:block">
-                    <span class="text-sm font-medium text-slate-500">{{ __('Bangladesh 2026') }}</span>
+            <a href="{{ lroute('home') }}" class="group flex items-center gap-2.5">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-base font-extrabold text-white shadow-sm">FS</span>
+                <span class="leading-tight">
+                    <span class="block text-sm font-extrabold tracking-tight text-ink-900 sm:text-base">{{ __('Freelancer Summit') }}</span>
+                    <span class="block text-xs font-semibold text-brand-600">{{ __('Bangladesh 2026') }}</span>
                 </span>
             </a>
 
-            <nav class="hidden lg:flex lg:items-center lg:gap-6" aria-label="{{ __('Primary') }}">
-                <a href="{{ lroute('home') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Home') }}</a>
-                <a href="{{ lroute('pages.show', ['slug' => 'about']) }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('About') }}</a>
-                <a href="{{ lroute('national-journey.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('National Journey') }}</a>
-                <a href="{{ lroute('grand-summit.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Grand Summit') }}</a>
-                <a href="{{ lroute('agenda.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Agenda') }}</a>
-                <a href="{{ lroute('speakers.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Speakers') }}</a>
-                <a href="{{ lroute('awards.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Awards') }}</a>
-                <a href="{{ lroute('sponsors.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Sponsors') }}</a>
-                <a href="{{ lroute('exhibition.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Exhibition') }}</a>
-                <a href="{{ lroute('forum.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Forum') }}</a>
-                <a href="{{ lroute('news.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('News') }}</a>
-                <a href="{{ lroute('success-stories.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Success Stories') }}</a>
-                <a href="{{ lroute('media.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Media') }}</a>
-                <a href="{{ lroute('partners.index') }}" class="text-sm font-medium text-slate-700 hover:text-brand-600">{{ __('Partners') }}</a>
+            <nav class="hidden lg:flex lg:items-center lg:gap-1" aria-label="{{ __('Primary') }}">
+                <a href="{{ lroute('home') }}" class="rounded-md px-3 py-2 text-sm font-semibold text-ink-700 transition hover:bg-slate-50 hover:text-brand-600">{{ __('Home') }}</a>
+                <a href="{{ lroute('pages.show', ['slug' => 'about']) }}" class="rounded-md px-3 py-2 text-sm font-semibold text-ink-700 transition hover:bg-slate-50 hover:text-brand-600">{{ __('About') }}</a>
+
+                @php
+                    $navGroups = [
+                        'summit' => [
+                            'label' => __('Summit'),
+                            'links' => [
+                                ['route' => 'national-journey.index', 'label' => __('National Journey')],
+                                ['route' => 'grand-summit.index', 'label' => __('Grand Summit')],
+                                ['route' => 'agenda.index', 'label' => __('Agenda')],
+                                ['route' => 'speakers.index', 'label' => __('Speakers')],
+                            ],
+                        ],
+                        'involved' => [
+                            'label' => __('Get Involved'),
+                            'links' => [
+                                ['route' => 'awards.index', 'label' => __('Awards')],
+                                ['route' => 'sponsors.index', 'label' => __('Sponsors')],
+                                ['route' => 'exhibition.index', 'label' => __('Exhibition')],
+                                ['route' => 'forum.index', 'label' => __('BACCO Forum')],
+                            ],
+                        ],
+                        'explore' => [
+                            'label' => __('Explore'),
+                            'links' => [
+                                ['route' => 'news.index', 'label' => __('News & Updates')],
+                                ['route' => 'success-stories.index', 'label' => __('Success Stories')],
+                                ['route' => 'media.index', 'label' => __('Media Gallery')],
+                                ['route' => 'partners.index', 'label' => __('Partners')],
+                            ],
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($navGroups as $key => $group)
+                    <div class="relative" @click.outside="openMenu === '{{ $key }}' && (openMenu = null)">
+                        <button
+                            type="button"
+                            class="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-semibold text-ink-700 transition hover:bg-slate-50 hover:text-brand-600"
+                            @click="openMenu = (openMenu === '{{ $key }}' ? null : '{{ $key }}')"
+                            :aria-expanded="(openMenu === '{{ $key }}').toString()"
+                        >
+                            {{ $group['label'] }}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition" :class="openMenu === '{{ $key }}' ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+
+                        <div
+                            x-show="openMenu === '{{ $key }}'"
+                            x-cloak
+                            x-transition.origin.top
+                            class="absolute left-0 top-full z-10 mt-1 w-56 overflow-hidden rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl shadow-slate-900/10"
+                        >
+                            @foreach ($group['links'] as $link)
+                                <a href="{{ lroute($link['route']) }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-brand-50 hover:text-brand-700">{{ $link['label'] }}</a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
             </nav>
 
-            <div class="flex items-center gap-3">
-                <div class="hidden sm:flex items-center gap-1 text-sm" aria-label="{{ __('Language') }}">
+            <div class="flex items-center gap-2">
+                <div class="hidden items-center gap-1 rounded-full bg-slate-100 p-0.5 text-xs sm:flex" aria-label="{{ __('Language') }}">
                     @foreach (config('app.supported_locales') as $altLocale)
                         <a
                             href="{{ url('/'.$altLocale.'/') }}"
-                            class="rounded px-2 py-1 {{ app()->getLocale() === $altLocale ? 'bg-brand-50 font-semibold text-brand-700' : 'text-slate-500 hover:text-brand-600' }}"
+                            class="rounded-full px-2.5 py-1 font-semibold transition {{ app()->getLocale() === $altLocale ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-brand-600' }}"
                             @if(app()->getLocale() === $altLocale) aria-current="true" @endif
                         >{{ strtoupper($altLocale) }}</a>
                     @endforeach
                 </div>
 
-                <a href="{{ lroute('register.index') }}" class="hidden rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 sm:inline-block">
-                    {{ __('Register for Summit') }}
+                <a href="{{ lroute('register.index') }}" class="hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-600/30 transition hover:shadow-md hover:shadow-brand-600/40 sm:inline-flex">
+                    {{ __('Register') }}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                    </svg>
                 </a>
 
                 <button
                     type="button"
-                    class="lg:hidden rounded-md p-2 text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600"
+                    class="rounded-md p-2 text-ink-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600 lg:hidden"
                     @click="mobileOpen = !mobileOpen"
                     :aria-expanded="mobileOpen.toString()"
                     aria-controls="mobile-menu"
@@ -141,24 +192,26 @@
             x-show="mobileOpen"
             x-cloak
             x-transition
-            class="lg:hidden border-t border-slate-100 px-4 py-3 space-y-2"
+            class="space-y-4 border-t border-slate-100 px-4 py-4 lg:hidden"
             aria-label="{{ __('Primary') }}"
         >
-            <a href="{{ lroute('home') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Home') }}</a>
-            <a href="{{ lroute('pages.show', ['slug' => 'about']) }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('About') }}</a>
-            <a href="{{ lroute('national-journey.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('National Journey') }}</a>
-            <a href="{{ lroute('grand-summit.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Grand Summit') }}</a>
-            <a href="{{ lroute('agenda.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Agenda') }}</a>
-            <a href="{{ lroute('speakers.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Speakers') }}</a>
-            <a href="{{ lroute('awards.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Awards') }}</a>
-            <a href="{{ lroute('sponsors.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Sponsors') }}</a>
-            <a href="{{ lroute('exhibition.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Exhibition') }}</a>
-            <a href="{{ lroute('forum.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Forum') }}</a>
-            <a href="{{ lroute('news.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('News') }}</a>
-            <a href="{{ lroute('success-stories.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Success Stories') }}</a>
-            <a href="{{ lroute('media.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Media') }}</a>
-            <a href="{{ lroute('partners.index') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">{{ __('Partners') }}</a>
-            <a href="{{ lroute('register.index') }}" class="block rounded-md bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white">{{ __('Register for Summit') }}</a>
+            <div class="space-y-1">
+                <a href="{{ lroute('home') }}" class="block rounded-md px-3 py-2 text-sm font-semibold text-ink-700 hover:bg-slate-50">{{ __('Home') }}</a>
+                <a href="{{ lroute('pages.show', ['slug' => 'about']) }}" class="block rounded-md px-3 py-2 text-sm font-semibold text-ink-700 hover:bg-slate-50">{{ __('About') }}</a>
+            </div>
+
+            @foreach ($navGroups as $group)
+                <div>
+                    <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-400">{{ $group['label'] }}</p>
+                    <div class="mt-1 space-y-1">
+                        @foreach ($group['links'] as $link)
+                            <a href="{{ lroute($link['route']) }}" class="block rounded-md px-3 py-2 text-sm font-medium text-ink-700 hover:bg-slate-50">{{ $link['label'] }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+
+            <a href="{{ lroute('register.index') }}" class="block rounded-full bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm">{{ __('Register for Summit') }}</a>
         </nav>
     </header>
 
@@ -166,38 +219,90 @@
         @yield('content')
     </main>
 
-    <footer class="mt-20 border-t border-slate-100 bg-slate-50">
-        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <footer class="mt-24 bg-ink-950 text-ink-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
                 <div>
-                    <p class="font-bold text-brand-700">{{ __('Freelancer Summit Bangladesh 2026') }}</p>
-                    <p class="mt-2 text-sm text-slate-600">{{ __('A national campaign for freelancers, digital professionals and the AI-powered digital economy of Bangladesh.') }}</p>
+                    <a href="{{ lroute('home') }}" class="flex items-center gap-2.5">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-base font-extrabold text-white">FS</span>
+                        <span class="leading-tight">
+                            <span class="block text-sm font-extrabold text-white">{{ __('Freelancer Summit') }}</span>
+                            <span class="block text-xs font-semibold text-brand-400">{{ __('Bangladesh 2026') }}</span>
+                        </span>
+                    </a>
+                    <p class="mt-4 max-w-sm text-sm leading-relaxed text-ink-300">{{ __('A national campaign for freelancers, digital professionals and the AI-powered digital economy of Bangladesh.') }}</p>
+                    <p class="mt-4 text-xs font-semibold uppercase tracking-wider text-ink-400">{{ __('Organized by') }}</p>
+                    <p class="mt-1 text-sm text-ink-300">{{ __('Bangladesh Association of Contact Center & Outsourcing (BACCO) / DoICT') }}</p>
+
+                    @php
+                        $settings = app(\App\Settings\GeneralSettings::class);
+                        $socialIcons = [
+                            'social_facebook' => ['label' => 'Facebook', 'path' => 'M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.87.24-1.46 1.5-1.46H16.5V4.36c-.26-.03-1.15-.11-2.19-.11-2.17 0-3.66 1.32-3.66 3.75V10.5h-2.5v3h2.5V21h2.85Z'],
+                            'social_twitter' => ['label' => 'Twitter / X', 'path' => 'M4 4l16 16M20 4 4 20'],
+                            'social_linkedin' => ['label' => 'LinkedIn', 'path' => 'M4.5 9h2.75v10.5H4.5V9Zm1.38-4.5a1.63 1.63 0 1 1 0 3.26 1.63 1.63 0 0 1 0-3.26ZM10 9h2.64v1.44h.04c.37-.7 1.27-1.44 2.6-1.44 2.79 0 3.3 1.83 3.3 4.22v5.78h-2.75v-5.13c0-1.22-.02-2.8-1.71-2.8-1.71 0-1.97 1.34-1.97 2.71v5.22H10V9Z'],
+                            'social_youtube' => ['label' => 'YouTube', 'path' => 'M21 12s0-3.15-.4-4.64a2.5 2.5 0 0 0-1.76-1.77C17.35 5.2 12 5.2 12 5.2s-5.35 0-6.84.39a2.5 2.5 0 0 0-1.76 1.77C3 8.85 3 12 3 12s0 3.15.4 4.64c.22.82.9 1.46 1.76 1.68C6.65 18.7 12 18.7 12 18.7s5.35 0 6.84-.38a2.5 2.5 0 0 0 1.76-1.68C21 15.15 21 12 21 12ZM10.2 15V9l5.2 3-5.2 3Z'],
+                            'social_instagram' => ['label' => 'Instagram', 'path' => 'M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2ZM12 3.5c-2.31 0-2.6.01-3.51.05-.9.04-1.52.19-2.06.4a4.15 4.15 0 0 0-1.5.98 4.15 4.15 0 0 0-.98 1.5c-.21.54-.36 1.16-.4 2.06C3.51 9.4 3.5 9.69 3.5 12s.01 2.6.05 3.51c.04.9.19 1.52.4 2.06.21.55.5 1.04.98 1.5.46.48.95.77 1.5.98.54.21 1.16.36 2.06.4.91.04 1.2.05 3.51.05s2.6-.01 3.51-.05c.9-.04 1.52-.19 2.06-.4a4.15 4.15 0 0 0 1.5-.98c.48-.46.77-.95.98-1.5.21-.54.36-1.16.4-2.06.04-.91.05-1.2.05-3.51s-.01-2.6-.05-3.51c-.04-.9-.19-1.52-.4-2.06a4.15 4.15 0 0 0-.98-1.5 4.15 4.15 0 0 0-1.5-.98c-.54-.21-1.16-.36-2.06-.4-.91-.04-1.2-.05-3.51-.05Zm0 3.02a5.48 5.48 0 1 1 0 10.96 5.48 5.48 0 0 1 0-10.96Zm4.66-.75a1.28 1.28 0 1 1 0 2.56 1.28 1.28 0 0 1 0-2.56Z'],
+                        ];
+                    @endphp
+                    @if (array_filter(array_map(fn ($f) => $settings->{$f}, array_keys($socialIcons))))
+                        <div class="mt-6 flex items-center gap-3">
+                            @foreach ($socialIcons as $field => $icon)
+                                @if ($settings->{$field})
+                                    <a href="{{ $settings->{$field} }}" target="_blank" rel="noopener" aria-label="{{ $icon['label'] }}" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-ink-300 transition hover:bg-brand-600 hover:text-white">
+                                        @if ($field === 'social_twitter')
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path stroke-linecap="round" d="{{ $icon['path'] }}" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="{{ $icon['path'] }}" />
+                                            </svg>
+                                        @endif
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
+
                 <div>
-                    <p class="text-sm font-semibold text-slate-900">{{ __('Organizer') }}</p>
-                    <p class="mt-2 text-sm text-slate-600">{{ __('Bangladesh Association of Contact Center & Outsourcing (BACCO) / DoICT') }}</p>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-slate-900">{{ __('Explore') }}</p>
-                    <ul class="mt-2 space-y-1 text-sm text-slate-600">
-                        <li><a href="{{ lroute('news.index') }}" class="hover:text-brand-700">{{ __('News & Updates') }}</a></li>
-                        <li><a href="{{ lroute('success-stories.index') }}" class="hover:text-brand-700">{{ __('Success Stories') }}</a></li>
-                        <li><a href="{{ lroute('media.index') }}" class="hover:text-brand-700">{{ __('Media Gallery') }}</a></li>
-                        <li><a href="{{ lroute('partners.index') }}" class="hover:text-brand-700">{{ __('Partners') }}</a></li>
+                    <p class="text-sm font-bold text-white">{{ __('Summit') }}</p>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="{{ lroute('national-journey.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('National Journey') }}</a></li>
+                        <li><a href="{{ lroute('grand-summit.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Grand Summit') }}</a></li>
+                        <li><a href="{{ lroute('agenda.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Agenda') }}</a></li>
+                        <li><a href="{{ lroute('speakers.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Speakers') }}</a></li>
                     </ul>
                 </div>
+
                 <div>
-                    <p class="text-sm font-semibold text-slate-900">{{ __('Legal') }}</p>
-                    <ul class="mt-2 space-y-1 text-sm text-slate-600">
-                        <li><a href="{{ lroute('pages.show', ['slug' => 'contact']) }}" class="hover:text-brand-700">{{ __('Contact') }}</a></li>
-                        <li><a href="{{ lroute('pages.show', ['slug' => 'privacy-policy']) }}" class="hover:text-brand-700">{{ __('Privacy Policy') }}</a></li>
-                        <li><a href="{{ lroute('pages.show', ['slug' => 'terms']) }}" class="hover:text-brand-700">{{ __('Terms') }}</a></li>
+                    <p class="text-sm font-bold text-white">{{ __('Explore') }}</p>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="{{ lroute('news.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('News & Updates') }}</a></li>
+                        <li><a href="{{ lroute('success-stories.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Success Stories') }}</a></li>
+                        <li><a href="{{ lroute('media.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Media Gallery') }}</a></li>
+                        <li><a href="{{ lroute('partners.index') }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Partners') }}</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="text-sm font-bold text-white">{{ __('Legal') }}</p>
+                    <ul class="mt-4 space-y-2.5 text-sm">
+                        <li><a href="{{ lroute('pages.show', ['slug' => 'contact']) }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Contact') }}</a></li>
+                        <li><a href="{{ lroute('pages.show', ['slug' => 'privacy-policy']) }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Privacy Policy') }}</a></li>
+                        <li><a href="{{ lroute('pages.show', ['slug' => 'terms']) }}" class="text-ink-300 transition hover:text-brand-400">{{ __('Terms') }}</a></li>
                     </ul>
                 </div>
             </div>
-            <p class="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-500">
-                &copy; {{ now()->year }} {{ __('Freelancer Summit Bangladesh. All rights reserved.') }}
-            </p>
+
+            <div class="mt-14 flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">
+                <p>&copy; {{ now()->year }} {{ __('Freelancer Summit Bangladesh. All rights reserved.') }}</p>
+                <div class="flex items-center gap-1.5">
+                    @foreach (config('app.supported_locales') as $altLocale)
+                        <a href="{{ url('/'.$altLocale.'/') }}" class="rounded px-2 py-1 font-semibold transition {{ app()->getLocale() === $altLocale ? 'text-brand-400' : 'text-ink-400 hover:text-ink-200' }}">{{ strtoupper($altLocale) }}</a>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </footer>
 
