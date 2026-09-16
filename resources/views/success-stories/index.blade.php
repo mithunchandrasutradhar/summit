@@ -10,8 +10,13 @@
         <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($stories as $story)
                 <a href="{{ lroute('success-stories.show', ['slug' => $story->slug]) }}" class="group block overflow-hidden rounded-lg border border-slate-100 shadow-sm hover:shadow-md">
-                    @if ($story->photoUrl())
-                        <img src="{{ $story->photoUrl() }}" alt="" class="h-48 w-full object-cover">
+                    @if ($story->photoUrl('medium'))
+                        <x-responsive-image
+                            :thumb="$story->photoUrl('thumb')"
+                            :medium="$story->photoUrl('medium')"
+                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            class="h-48 w-full object-cover"
+                        />
                     @else
                         <div class="h-48 w-full bg-brand-50"></div>
                     @endif

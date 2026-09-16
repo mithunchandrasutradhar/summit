@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasResponsiveImages;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -9,7 +10,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class MediaCoverage extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, HasResponsiveImages, InteractsWithMedia {
+        HasResponsiveImages::registerMediaConversions insteadof InteractsWithMedia;
+    }
 
     protected $table = 'media_coverage';
 
@@ -32,8 +35,8 @@ class MediaCoverage extends Model implements HasMedia
         $this->addMediaCollection('source_logo')->singleFile();
     }
 
-    public function sourceLogoUrl(): ?string
+    public function sourceLogoUrl(string $conversion = ''): ?string
     {
-        return $this->getFirstMediaUrl('source_logo') ?: null;
+        return $this->getFirstMediaUrl('source_logo', $conversion) ?: null;
     }
 }

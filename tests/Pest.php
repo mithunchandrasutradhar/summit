@@ -15,6 +15,11 @@ pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
+// Unit tests boot the app (needed for facades like Http::fake()) but skip
+// RefreshDatabase — these are pure-logic tests that never touch the DB.
+pest()->extend(Tests\TestCase::class)
+    ->in('Unit');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

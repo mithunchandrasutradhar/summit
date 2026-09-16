@@ -14,6 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'locale' => \App\Http\Middleware\SetLocale::class,
         ]);
+
+        // SSLCommerz posts its IPN and success/fail/cancel callbacks
+        // server-to-server (and via a browser auto-submit form), with no
+        // Laravel session/CSRF token of ours to present.
+        $middleware->validateCsrfTokens(except: [
+            'payments/sslcommerz/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

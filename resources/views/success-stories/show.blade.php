@@ -7,8 +7,8 @@
         <a href="{{ lroute('success-stories.index') }}" class="text-sm font-medium text-brand-600 hover:text-brand-700">&larr; {{ __('Back to Success Stories') }}</a>
 
         <div class="mt-6 flex items-center gap-4">
-            @if ($story->photoUrl())
-                <img src="{{ $story->photoUrl() }}" alt="" class="h-16 w-16 rounded-full object-cover">
+            @if ($story->photoUrl('thumb'))
+                <img src="{{ $story->photoUrl('thumb') }}" alt="" class="h-16 w-16 rounded-full object-cover">
             @endif
             <div>
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">{{ $story->freelancer_name }}</h1>

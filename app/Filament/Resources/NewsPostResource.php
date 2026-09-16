@@ -21,6 +21,11 @@ class NewsPostResource extends Resource
 
     protected static ?string $navigationGroup = 'Content';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'admin', 'content_editor']) ?? false;
+    }
+
     use Translatable;
 
     public static function form(Form $form): Form

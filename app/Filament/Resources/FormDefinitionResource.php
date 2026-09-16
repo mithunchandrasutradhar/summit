@@ -19,6 +19,11 @@ class FormDefinitionResource extends Resource
 
     protected static ?string $navigationGroup = 'Form Builder';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
     protected static ?string $navigationLabel = 'Registration Forms';
 
     protected static ?string $modelLabel = 'Form';

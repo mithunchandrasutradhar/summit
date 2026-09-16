@@ -18,6 +18,11 @@ class HomepageSectionResource extends Resource
 
     protected static ?string $navigationGroup = 'Content';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'admin', 'content_editor']) ?? false;
+    }
+
     protected static ?string $navigationLabel = 'Homepage Sections';
 
     public static function form(Form $form): Form

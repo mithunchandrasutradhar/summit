@@ -86,7 +86,25 @@ class FormField extends Model
             }
         }
 
-        return array_merge($rules, $this->validation_rules ?? []);
+        $custom = $this->validation_rules ?? [];
+
+        if ($this->type === 'file') {
+            // Sensible defaults so an admin-added file field isn't wide open
+            // to arbitrary uploads by default — skipped if the admin has
+            // already set their own mime/size rule for this field.
+            $hasCustomMimes = collect($custom)->contains(fn ($rule) => is_string($rule) && str_starts_with($rule, 'mimes:'));
+            $hasCustomSize = collect($custom)->contains(fn ($rule) => is_string($rule) && (str_starts_with($rule, 'max:') || str_starts_with($rule, 'size:')));
+
+            if (! $hasCustomMimes) {
+                $rules[] = 'mimes:pdf,jpg,jpeg,png,doc,docx';
+            }
+
+            if (! $hasCustomSize) {
+                $rules[] = 'max:5120'; // 5MB
+            }
+        }
+
+        return array_merge($rules, $custom);
     }
 
     /**

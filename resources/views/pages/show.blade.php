@@ -2,6 +2,7 @@
 
 @section('title', $page->resolvedSeoTitle($page->title).' — '.config('app.name'))
 @section('meta_description', $page->resolvedSeoDescription())
+@section('og_image', $page->resolvedOgImageUrl())
 
 @section('content')
     <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">

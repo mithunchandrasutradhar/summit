@@ -11,8 +11,13 @@
         <div class="mt-10 grid gap-8 sm:grid-cols-3">
             @foreach ($posts as $post)
                 <a href="{{ lroute('news.show', ['slug' => $post->slug]) }}" class="group block overflow-hidden rounded-lg border border-slate-100 shadow-sm hover:shadow-md">
-                    @if ($post->coverImageUrl())
-                        <img src="{{ $post->coverImageUrl() }}" alt="" class="h-40 w-full object-cover">
+                    @if ($post->coverImageUrl('medium'))
+                        <x-responsive-image
+                            :thumb="$post->coverImageUrl('thumb')"
+                            :medium="$post->coverImageUrl('medium')"
+                            sizes="(min-width: 640px) 33vw, 100vw"
+                            class="h-40 w-full object-cover"
+                        />
                     @else
                         <div class="h-40 w-full bg-brand-50"></div>
                     @endif

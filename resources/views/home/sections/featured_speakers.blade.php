@@ -11,8 +11,8 @@
         <div class="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
             @foreach ($speakers as $speaker)
                 <a href="{{ lroute('speakers.show', ['slug' => $speaker->slug]) }}" class="group block text-center">
-                    @if ($speaker->photoUrl())
-                        <img src="{{ $speaker->photoUrl() }}" alt="" class="mx-auto h-28 w-28 rounded-full object-cover">
+                    @if ($speaker->photoUrl('thumb'))
+                        <img src="{{ $speaker->photoUrl('thumb') }}" alt="" class="mx-auto h-28 w-28 rounded-full object-cover">
                     @else
                         <div class="mx-auto h-28 w-28 rounded-full bg-brand-50"></div>
                     @endif

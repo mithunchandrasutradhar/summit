@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasResponsiveImages;
 use App\Concerns\HasSeoMeta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,9 @@ use Spatie\Translatable\HasTranslations;
 
 class Speaker extends Model implements HasMedia
 {
-    use HasFactory, HasSeoMeta, HasSlug, HasTranslations, InteractsWithMedia;
+    use HasFactory, HasResponsiveImages, HasSeoMeta, HasSlug, HasTranslations, InteractsWithMedia {
+        HasResponsiveImages::registerMediaConversions insteadof InteractsWithMedia;
+    }
 
     public array $translatable = ['bio'];
 

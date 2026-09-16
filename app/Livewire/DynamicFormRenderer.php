@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\FormDefinition;
 use App\Models\FormField;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -33,9 +34,18 @@ class DynamicFormRenderer extends Component
 
     public bool $submitted = false;
 
+    // Honeypot: a hidden field real users never see or fill; bots that fill
+    // every input trip it. Kept blank and out of $rules() deliberately.
+    public string $website = '';
+
+    // Time-trap companion to the honeypot: bots that fill-and-submit
+    // instantly are rejected even if they skip the honeypot field.
+    public ?int $renderedAt = null;
+
     public function mount(string $formKey): void
     {
         $this->formKey = $formKey;
+        $this->renderedAt = now()->timestamp;
 
         foreach ($this->fields() as $field) {
             $this->values[$field->field_key] = $field->type === 'checkbox' ? false : null;
@@ -74,6 +84,25 @@ class DynamicFormRenderer extends Component
 
     public function submit(): void
     {
+        if ($this->isLikelySpam()) {
+            // Don't tip off automated submitters — behave exactly like a
+            // successful submission without persisting or notifying anyone.
+            $this->reset('values');
+            $this->submitted = true;
+
+            return;
+        }
+
+        $limiterKey = 'dynamic-form-submit:'.$this->formKey.':'.request()->ip();
+
+        if (RateLimiter::tooManyAttempts($limiterKey, 6)) {
+            $this->addError('submit', __('Too many submissions from this connection — please wait a minute and try again.'));
+
+            return;
+        }
+
+        RateLimiter::hit($limiterKey, 60);
+
         $this->validate();
 
         $system = [];
@@ -111,6 +140,15 @@ class DynamicFormRenderer extends Component
         }
 
         $this->submitted = true;
+    }
+
+    protected function isLikelySpam(): bool
+    {
+        if (filled($this->website)) {
+            return true;
+        }
+
+        return $this->renderedAt !== null && now()->timestamp - $this->renderedAt < 3;
     }
 
     /**

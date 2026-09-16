@@ -64,6 +64,7 @@ it('does not render fields belonging to a different form', function () {
 
 it('validates required fields before submitting', function () {
     Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
         ->set('values.name', '')
         ->call('submit')
         ->assertHasErrors(['values.name' => 'required']);
@@ -73,6 +74,7 @@ it('splits submitted values into system columns and custom field_values, and dis
     Event::fake();
 
     Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
         ->set('values.name', 'Jane Doe')
         ->set('values.email', 'jane@example.com')
         ->set('values.consent', true)
@@ -92,6 +94,7 @@ it('splits submitted values into system columns and custom field_values, and dis
 
 it('rejects submission when a required consent checkbox is left unchecked', function () {
     Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
         ->set('values.name', 'Jane Doe')
         ->set('values.email', 'jane@example.com')
         ->set('values.consent', false)
@@ -111,6 +114,7 @@ it('splits a comma-separated tags field into an array custom value', function ()
     Event::fake();
 
     Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
         ->set('values.name', 'Jane Doe')
         ->set('values.email', 'jane@example.com')
         ->set('values.consent', true)
@@ -152,6 +156,7 @@ it('stores an uploaded file to pending storage and puts its path in the custom v
     $file = UploadedFile::fake()->create('cv.pdf', 100);
 
     Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
         ->set('values.name', 'Jane Doe')
         ->set('values.email', 'jane@example.com')
         ->set('values.consent', true)
@@ -163,4 +168,52 @@ it('stores an uploaded file to pending storage and puts its path in the custom v
 
             return true;
         });
+});
+
+it('silently drops a submission when the honeypot field is filled, without dispatching or persisting', function () {
+    Event::fake();
+
+    Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
+        ->set('website', 'https://spam.example.com')
+        ->set('values.name', 'Bot')
+        ->set('values.email', 'bot@example.com')
+        ->set('values.consent', true)
+        ->call('submit')
+        ->assertSet('submitted', true)
+        ->assertNotDispatched('dynamic-form-submitted');
+});
+
+it('silently drops a submission that arrives faster than a human could fill the form', function () {
+    Event::fake();
+
+    Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('values.name', 'Bot')
+        ->set('values.email', 'bot@example.com')
+        ->set('values.consent', true)
+        ->call('submit')
+        ->assertSet('submitted', true)
+        ->assertNotDispatched('dynamic-form-submitted');
+});
+
+it('rate-limits repeated submissions from the same connection', function () {
+    for ($i = 0; $i < 6; $i++) {
+        Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+            ->set('renderedAt', now()->subSeconds(10)->timestamp)
+            ->set('values.name', 'Jane Doe')
+            ->set('values.email', 'jane@example.com')
+            ->set('values.consent', true)
+            ->call('submit')
+            ->assertHasNoErrors()
+            ->assertDispatched('dynamic-form-submitted');
+    }
+
+    Livewire::test(DynamicFormRenderer::class, ['formKey' => 'test_form'])
+        ->set('renderedAt', now()->subSeconds(10)->timestamp)
+        ->set('values.name', 'Jane Doe')
+        ->set('values.email', 'jane@example.com')
+        ->set('values.consent', true)
+        ->call('submit')
+        ->assertHasErrors(['submit'])
+        ->assertNotDispatched('dynamic-form-submitted');
 });

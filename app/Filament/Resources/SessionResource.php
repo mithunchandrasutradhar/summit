@@ -20,6 +20,11 @@ class SessionResource extends Resource
 
     protected static ?string $navigationGroup = 'Grand Summit';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'admin', 'content_editor']) ?? false;
+    }
+
     protected static ?string $navigationLabel = 'Agenda / Sessions';
 
     use Translatable;

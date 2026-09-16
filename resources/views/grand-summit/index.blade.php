@@ -3,6 +3,12 @@
 @section('title', __('Grand Summit').' — '.config('app.name'))
 @section('meta_description', $event?->description)
 
+@section('structured_data')
+    @if ($eventSchema)
+        {!! $eventSchema !!}
+    @endif
+@endsection
+
 @section('content')
     @include('partials.announcements-banner')
 

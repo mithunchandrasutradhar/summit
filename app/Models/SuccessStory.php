@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasResponsiveImages;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -12,7 +13,9 @@ use Spatie\Translatable\HasTranslations;
 
 class SuccessStory extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, HasTranslations, InteractsWithMedia;
+    use HasFactory, HasResponsiveImages, HasSlug, HasTranslations, InteractsWithMedia {
+        HasResponsiveImages::registerMediaConversions insteadof InteractsWithMedia;
+    }
 
     public array $translatable = ['headline', 'story'];
 

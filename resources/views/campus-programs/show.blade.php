@@ -2,6 +2,7 @@
 
 @section('title', $campusProgram->resolvedSeoTitle($campusProgram->institution_name).' — '.config('app.name'))
 @section('meta_description', $campusProgram->resolvedSeoDescription($campusProgram->description))
+@section('og_image', $campusProgram->resolvedOgImageUrl())
 
 @section('content')
     <article class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">

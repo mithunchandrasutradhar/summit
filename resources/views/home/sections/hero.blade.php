@@ -46,7 +46,7 @@
     @endif
 
     <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <a href="#" class="rounded-md bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
+        <a href="{{ lroute('register.index') }}" class="rounded-md bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
             {{ __('Register for Summit') }}
         </a>
         <a href="{{ lroute('news.index') }}" class="rounded-md border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 hover:border-brand-600 hover:text-brand-700">

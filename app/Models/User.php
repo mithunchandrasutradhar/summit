@@ -63,4 +63,19 @@ class User extends Authenticatable implements FilamentUser
             'awards_jury',
         ]);
     }
+
+    /**
+     * Users holding any of the given roles — unlike HasRoles' role() scope,
+     * this never throws if a role hasn't been seeded (e.g. a fresh install,
+     * or a test that doesn't seed every role), it just finds fewer users.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, self>
+     */
+    public static function withAnyRole(array $roleNames): \Illuminate\Database\Eloquent\Collection
+    {
+        return static::whereHas(
+            'roles',
+            fn ($query) => $query->whereIn('name', $roleNames)
+        )->get();
+    }
 }

@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\AttendeeType;
+use App\Models\AwardCategory;
+use App\Models\ExhibitionBooth;
 use App\Models\FormDefinition;
 use App\Models\FormField;
+use App\Models\SponsorTier;
 use Illuminate\Database\Seeder;
 
 class FormBuilderSeeder extends Seeder
@@ -14,6 +18,7 @@ class FormBuilderSeeder extends Seeder
             ['name', 'Full Name', 'text', true],
             ['email', 'Email', 'email', true, 'email'],
             ['mobile', 'Mobile Number', 'tel', true, 'mobile'],
+            ['attendee_type_id', 'I am a...', 'relation_select', true, 'attendee_type_id', null, null, AttendeeType::class],
             ['organization', 'Organization / Institution', 'text'],
             ['designation', 'Designation', 'text'],
             ['city', 'City', 'text'],
@@ -22,6 +27,7 @@ class FormBuilderSeeder extends Seeder
         ]);
 
         $this->seedForm('award_nomination', 'Freelancer Award Nomination', [
+            ['category_id', 'Award Category', 'relation_select', true, 'category_id', null, null, AwardCategory::class],
             ['nominee_name', 'Nominee / Applicant Name', 'text', true],
             ['nominee_email', 'Email', 'email', true, 'nominee_email'],
             ['nominee_phone', 'Phone', 'tel'],
@@ -33,6 +39,7 @@ class FormBuilderSeeder extends Seeder
         ]);
 
         $this->seedForm('sponsorship_enquiry', 'Sponsorship Enquiry', [
+            ['sponsor_tier_id', 'Sponsorship Tier of Interest', 'relation_select', false, 'sponsor_tier_id', null, null, SponsorTier::class],
             ['company_name', 'Company Name', 'text', true],
             ['contact_person', 'Contact Person', 'text', true],
             ['designation', 'Designation', 'text'],
@@ -47,6 +54,7 @@ class FormBuilderSeeder extends Seeder
         ]);
 
         $this->seedForm('exhibitor_application', 'Exhibition / Booth Registration', [
+            ['preferred_booth_id', 'Preferred Booth', 'relation_select', false, 'preferred_booth_id', null, null, ExhibitionBooth::class],
             ['organization_name', 'Organization Name', 'text', true],
             ['sector', 'Sector', 'text'],
             ['booth_requirement', 'Booth Requirement', 'text'],
@@ -75,7 +83,7 @@ class FormBuilderSeeder extends Seeder
     }
 
     /**
-     * @param  array<int, array{0: string, 1: string, 2: string, 3?: bool, 4?: string|null, 5?: array|null, 6?: string|null}>  $fields
+     * @param  array<int, array{0: string, 1: string, 2: string, 3?: bool, 4?: string|null, 5?: array|null, 6?: string|null, 7?: string|null}>  $fields
      */
     private function seedForm(string $key, string $name, array $fields): void
     {
@@ -87,6 +95,7 @@ class FormBuilderSeeder extends Seeder
             $mapsToColumn = $field[4] ?? null;
             $options = $field[5] ?? null;
             $helpText = $field[6] ?? null;
+            $relationSource = $field[7] ?? null;
 
             FormField::firstOrCreate(
                 ['form_definition_id' => $definition->id, 'field_key' => $fieldKey],
@@ -94,6 +103,7 @@ class FormBuilderSeeder extends Seeder
                     'label' => ['en' => $label, 'bn' => $label],
                     'type' => $type,
                     'options' => $options,
+                    'relation_source' => $relationSource,
                     'is_required' => $isRequired,
                     'help_text' => $helpText,
                     'order' => $order,

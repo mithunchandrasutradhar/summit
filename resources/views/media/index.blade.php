@@ -10,8 +10,13 @@
         <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($galleries as $gallery)
                 <div class="overflow-hidden rounded-lg border border-slate-100 shadow-sm">
-                    @if ($cover = $gallery->getFirstMediaUrl('photos'))
-                        <img src="{{ $cover }}" alt="" class="h-48 w-full object-cover">
+                    @if ($gallery->getFirstMedia('photos'))
+                        <x-responsive-image
+                            :thumb="$gallery->getFirstMediaUrl('photos', 'thumb')"
+                            :medium="$gallery->getFirstMediaUrl('photos', 'medium')"
+                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            class="h-48 w-full object-cover"
+                        />
                     @else
                         <div class="flex h-48 w-full items-center justify-center bg-brand-50 text-brand-300">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -50,8 +55,8 @@
                 <div class="mt-6 grid grid-cols-2 gap-8 sm:grid-cols-4">
                     @foreach ($coverage as $item)
                         <a href="{{ $item->url }}" target="_blank" rel="noopener" class="flex flex-col items-center gap-2 text-center">
-                            @if ($item->sourceLogoUrl())
-                                <img src="{{ $item->sourceLogoUrl() }}" alt="{{ $item->source_name }}" class="max-h-10 w-auto grayscale transition hover:grayscale-0">
+                            @if ($item->sourceLogoUrl('thumb'))
+                                <img src="{{ $item->sourceLogoUrl('thumb') }}" alt="{{ $item->source_name }}" class="max-h-10 w-auto grayscale transition hover:grayscale-0">
                             @else
                                 <span class="text-sm font-medium text-slate-700">{{ $item->source_name }}</span>
                             @endif

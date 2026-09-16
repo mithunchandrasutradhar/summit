@@ -24,8 +24,8 @@
                     <div class="mt-6 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
                         @foreach ($partnersByCategory[$key] as $partner)
                             <a href="{{ $partner->website ?: '#' }}" target="_blank" rel="noopener" class="flex items-center justify-center rounded-lg border border-slate-100 p-4 grayscale transition hover:grayscale-0">
-                                @if ($partner->logoUrl())
-                                    <img src="{{ $partner->logoUrl() }}" alt="{{ $partner->name }}" class="max-h-16 w-auto">
+                                @if ($partner->logoUrl('thumb'))
+                                    <img src="{{ $partner->logoUrl('thumb') }}" alt="{{ $partner->name }}" class="max-h-16 w-auto">
                                 @else
                                     <span class="text-sm font-medium text-slate-700">{{ $partner->name }}</span>
                                 @endif

@@ -8,8 +8,8 @@
         <div class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
             @foreach ($partners as $partner)
                 <a href="{{ $partner->website ?: '#' }}" target="_blank" rel="noopener" class="grayscale transition hover:grayscale-0">
-                    @if ($partner->logoUrl())
-                        <img src="{{ $partner->logoUrl() }}" alt="{{ $partner->name }}" class="h-12 w-auto">
+                    @if ($partner->logoUrl('thumb'))
+                        <img src="{{ $partner->logoUrl('thumb') }}" alt="{{ $partner->name }}" class="h-12 w-auto">
                     @else
                         <span class="text-sm font-medium text-slate-700">{{ $partner->name }}</span>
                     @endif

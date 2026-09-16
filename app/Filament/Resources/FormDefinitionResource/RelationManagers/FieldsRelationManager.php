@@ -45,9 +45,18 @@ class FieldsRelationManager extends RelationManager
                     ->visible(fn (Forms\Get $get) => $get('type') === 'relation_select')
                     ->helperText('Fully-qualified model class, e.g. App\\Models\\AttendeeType.'),
                 Forms\Components\TextInput::make('help_text'),
+                Forms\Components\TagsInput::make('validation_rules')
+                    ->label('Extra Validation Rules')
+                    ->placeholder('e.g. max:255, mimes:pdf,jpg')
+                    ->helperText('Additional Laravel rule strings, applied on top of the automatic rules for this field\'s type.')
+                    ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_required'),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
+                Forms\Components\Toggle::make('is_filterable')
+                    ->label('Filterable / Exportable')
+                    ->disabled(fn (Forms\Get $get) => $get('is_system'))
+                    ->helperText('Adds this custom field as a column, filter, and export column on the admin table. Not available for system fields, which already have one.'),
                 Forms\Components\Toggle::make('is_system')
                     ->disabled()
                     ->helperText('Set by the system for brief-specified default fields — not editable here.'),
@@ -73,6 +82,9 @@ class FieldsRelationManager extends RelationManager
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_system')
                     ->label('Protected')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('is_filterable')
+                    ->label('Filterable')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),

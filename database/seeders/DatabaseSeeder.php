@@ -52,6 +52,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ContentSpineSeeder::class);
         $this->call(NationalJourneySeeder::class);
         $this->call(GrandSummitSeeder::class);
+        $this->call(RegistrationEngineSeeder::class);
+        $this->call(AwardsSeeder::class);
+        $this->call(SponsorshipExhibitionSeeder::class);
+        $this->call(ForumSeeder::class);
         $this->call(FormBuilderSeeder::class);
     }
 }

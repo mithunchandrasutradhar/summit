@@ -33,8 +33,13 @@
         <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             @forelse ($speakers as $speaker)
                 <a href="{{ lroute('speakers.show', ['slug' => $speaker->slug]) }}" class="group block overflow-hidden rounded-lg border border-slate-100 shadow-sm hover:shadow-md">
-                    @if ($speaker->photoUrl())
-                        <img src="{{ $speaker->photoUrl() }}" alt="" class="h-48 w-full object-cover">
+                    @if ($speaker->photoUrl('medium'))
+                        <x-responsive-image
+                            :thumb="$speaker->photoUrl('thumb')"
+                            :medium="$speaker->photoUrl('medium')"
+                            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                            class="h-48 w-full object-cover"
+                        />
                     @else
                         <div class="h-48 w-full bg-brand-50"></div>
                     @endif

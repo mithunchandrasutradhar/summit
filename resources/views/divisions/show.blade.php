@@ -9,8 +9,13 @@
 
         <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{{ $division->name }}</h1>
 
-        @if ($division->imageUrl())
-            <img src="{{ $division->imageUrl() }}" alt="" class="mt-8 h-64 w-full rounded-lg object-cover">
+        @if ($division->imageUrl('medium'))
+            <x-responsive-image
+                :medium="$division->imageUrl('medium')"
+                :large="$division->imageUrl('large')"
+                sizes="(min-width: 1024px) 800px, 100vw"
+                class="mt-8 h-64 w-full rounded-lg object-cover"
+            />
         @endif
 
         @if ($division->description)

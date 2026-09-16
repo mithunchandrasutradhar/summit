@@ -14,13 +14,30 @@ trait HasSeoMeta
         return $this->seo_title ?: $fallback;
     }
 
-    public function resolvedSeoDescription(?string $fallback = null): ?string
+    /**
+     * Always returns a string (never null) — this is passed directly to
+     * single-line `@section('meta_description', ...)` calls, and Blade's
+     * startSection() silently reinterprets a literal null as the start of
+     * a block-style section (opening an output buffer it never closes),
+     * corrupting the rest of the page. See resolvedOgImageUrl() below for
+     * the same reasoning.
+     */
+    public function resolvedSeoDescription(?string $fallback = null): string
     {
-        return $this->seo_description ?: $fallback;
+        return $this->seo_description ?: ($fallback ?? '');
     }
 
-    public function resolvedOgImageUrl(?string $fallback = null): ?string
+    /**
+     * Always returns a string (never null) — see resolvedSeoDescription()
+     * above for why a null return value here would be a real bug, not just
+     * a style preference, whenever this is passed to `@section(...)`.
+     */
+    public function resolvedOgImageUrl(?string $fallback = null): string
     {
-        return $this->og_image ?: $fallback;
+        if (! $this->og_image) {
+            return $fallback ?? '';
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->og_image);
     }
 }

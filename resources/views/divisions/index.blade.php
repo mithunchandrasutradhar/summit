@@ -9,8 +9,13 @@
         <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ($divisions as $division)
                 <a href="{{ lroute('divisions.show', ['slug' => $division->slug]) }}" class="group block overflow-hidden rounded-lg border border-slate-100 shadow-sm hover:shadow-md">
-                    @if ($division->imageUrl())
-                        <img src="{{ $division->imageUrl() }}" alt="" class="h-32 w-full object-cover">
+                    @if ($division->imageUrl('medium'))
+                        <x-responsive-image
+                            :thumb="$division->imageUrl('thumb')"
+                            :medium="$division->imageUrl('medium')"
+                            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                            class="h-32 w-full object-cover"
+                        />
                     @else
                         <div class="h-32 w-full bg-brand-50"></div>
                     @endif

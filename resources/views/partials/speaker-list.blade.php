@@ -4,8 +4,8 @@
         <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($speakers as $speaker)
                 <div class="flex items-center gap-3 rounded-lg border border-slate-100 p-3">
-                    @if ($speaker->photoUrl())
-                        <img src="{{ $speaker->photoUrl() }}" alt="" class="h-12 w-12 rounded-full object-cover">
+                    @if ($speaker->photoUrl('thumb'))
+                        <img src="{{ $speaker->photoUrl('thumb') }}" alt="" class="h-12 w-12 rounded-full object-cover">
                     @else
                         <div class="h-12 w-12 rounded-full bg-brand-50"></div>
                     @endif

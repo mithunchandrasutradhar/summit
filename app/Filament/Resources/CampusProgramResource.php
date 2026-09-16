@@ -21,6 +21,11 @@ class CampusProgramResource extends Resource
 
     protected static ?string $navigationGroup = 'Campaign';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'admin', 'content_editor']) ?? false;
+    }
+
     protected static ?string $navigationLabel = 'Campus Programs';
 
     use Translatable;

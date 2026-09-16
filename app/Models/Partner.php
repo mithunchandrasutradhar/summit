@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasResponsiveImages;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -9,7 +10,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Partner extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, HasResponsiveImages, InteractsWithMedia {
+        HasResponsiveImages::registerMediaConversions insteadof InteractsWithMedia;
+    }
 
     public const CATEGORIES = [
         'organizer',
@@ -40,9 +43,9 @@ class Partner extends Model implements HasMedia
         $this->addMediaCollection('logo')->singleFile();
     }
 
-    public function logoUrl(): ?string
+    public function logoUrl(string $conversion = ''): ?string
     {
-        return $this->getFirstMediaUrl('logo') ?: null;
+        return $this->getFirstMediaUrl('logo', $conversion) ?: null;
     }
 
     public function scopePublished($query)

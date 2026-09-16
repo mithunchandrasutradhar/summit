@@ -2,14 +2,15 @@
 
 @section('title', $speaker->resolvedSeoTitle($speaker->name).' — '.config('app.name'))
 @section('meta_description', $speaker->resolvedSeoDescription($speaker->bio))
+@section('og_image', $speaker->resolvedOgImageUrl($speaker->photoUrl('medium')))
 
 @section('content')
     <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         <a href="{{ lroute('speakers.index') }}" class="text-sm font-medium text-brand-600 hover:text-brand-700">&larr; {{ __('Speakers & Experts') }}</a>
 
         <div class="mt-6 flex items-center gap-5">
-            @if ($speaker->photoUrl())
-                <img src="{{ $speaker->photoUrl() }}" alt="" class="h-24 w-24 rounded-full object-cover">
+            @if ($speaker->photoUrl('thumb'))
+                <img src="{{ $speaker->photoUrl('thumb') }}" alt="" class="h-24 w-24 rounded-full object-cover">
             @else
                 <div class="h-24 w-24 rounded-full bg-brand-50"></div>
             @endif

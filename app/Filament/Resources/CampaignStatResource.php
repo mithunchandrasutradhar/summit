@@ -18,6 +18,11 @@ class CampaignStatResource extends Resource
 
     protected static ?string $navigationGroup = 'Campaign';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
     protected static ?string $navigationLabel = 'National Journey Stats';
 
     public static function form(Form $form): Form

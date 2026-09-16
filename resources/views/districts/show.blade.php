@@ -2,6 +2,7 @@
 
 @section('title', $district->resolvedSeoTitle($district->name.' Roadshow').' — '.config('app.name'))
 @section('meta_description', $district->resolvedSeoDescription($district->description))
+@section('og_image', $district->resolvedOgImageUrl())
 
 @section('content')
     <article class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
